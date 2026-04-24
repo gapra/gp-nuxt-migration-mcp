@@ -1157,6 +1157,10 @@ When validation passes, the hook automatically records to:
 - ✅ Type-safe validation
 - ✅ Helpful error messages
 
+## Author
+
+**Gapra (gapraart@gmail.com)**
+
 ## License
 
 MIT

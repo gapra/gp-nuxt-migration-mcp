@@ -27,7 +27,7 @@
     "pinia",
     "typescript"
   ],
-  "author": "Galih Pranowo",
+  "author": "Gapra (gapraart@gmail.com)",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
