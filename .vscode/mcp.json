@@ -1,0 +1,60 @@
+{
+  "servers": {
+    "analysisMcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/dist/mcp_servers/analysis_server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "sandboxEnabled": true,
+      "description": "Read-only analysis MCP for auditing source codebase patterns",
+      "dev": {
+        "watch": "${workspaceFolder}/src/mcp_servers/analysis_server.ts"
+      }
+    },
+    "generatorMcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/dist/mcp_servers/generator_server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "sandboxEnabled": false,
+      "description": "Generator MCP for proposing and writing code transformations",
+      "dev": {
+        "watch": "${workspaceFolder}/src/mcp_servers/generator_server.ts"
+      }
+    },
+    "orchestratorMcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/dist/mcp_servers/orchestrator_server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "sandboxEnabled": false,
+      "description": "Main orchestrator MCP for coordinating migration workflow",
+      "dev": {
+        "watch": "${workspaceFolder}/src/mcp_servers/orchestrator_server.ts"
+      }
+    }
+  },
+  "mcpServers": {
+    "analysisMcp": {
+      "url": "stdio://analysisMcp"
+    },
+    "generatorMcp": {
+      "url": "stdio://generatorMcp"
+    },
+    "orchestratorMcp": {
+      "url": "stdio://orchestratorMcp"
+    }
+  }
+}

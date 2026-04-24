@@ -1,0 +1,9 @@
+# This file will contain audit operation logs in JSONL format
+# Each line is a JSON object with:
+# - recorded_at: ISO timestamp
+# - tool: tool name that performed the audit
+# - module: module being audited
+# - source_path: source codebase path
+# - pattern_counts: object with counts per pattern type
+# Example:
+# {"recorded_at":"2026-04-06T10:00:00.000Z","tool":"scan_source_patterns","module":"deals","source_path":"/path/to/source","pattern_counts":{"vuex":5,"mixins":3}}

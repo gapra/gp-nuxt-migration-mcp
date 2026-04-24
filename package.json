@@ -1,0 +1,46 @@
+{
+  "name": "nuxt-migration-mcp",
+  "version": "1.0.0",
+  "description": "MCP Server for Nuxt 2 to Nuxt 4 migration analysis and automation",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:hooks": "vitest run hooks",
+    "mcp:analysis": "node dist/mcp_servers/analysis_server.js",
+    "mcp:generator": "node dist/mcp_servers/generator_server.js",
+    "mcp:orchestrator": "node dist/mcp_servers/orchestrator_server.js",
+    "mcp:dev:analysis": "tsx watch src/mcp_servers/analysis_server.ts",
+    "mcp:dev:generator": "tsx watch src/mcp_servers/generator_server.ts",
+    "mcp:dev:orchestrator": "tsx watch src/mcp_servers/orchestrator_server.ts"
+  },
+  "keywords": [
+    "mcp",
+    "nuxt",
+    "migration",
+    "vue2",
+    "vue3",
+    "pinia",
+    "typescript"
+  ],
+  "author": "Galih Pranowo",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "glob": "^11.0.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

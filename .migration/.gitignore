@@ -1,0 +1,15 @@
+# Ignore all state files but keep structure
+migration_state.json
+migration_log.md
+
+# Ignore action logs (sensitive data)
+actions/*.jsonl
+
+# Ignore backups (can be large)
+backups/*
+
+# Keep directory structure
+!.gitkeep
+!README.md
+!actions/.gitkeep
+!backups/.gitkeep

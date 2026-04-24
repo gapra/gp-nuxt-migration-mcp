@@ -1,0 +1,2 @@
+# Backup directory for rollback functionality
+# Files are automatically backed up before being overwritten
