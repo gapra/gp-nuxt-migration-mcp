@@ -18,9 +18,9 @@ skills:
 **Purpose**: Migrate custom components and manual styling to target codebase's design system
 
 **Responsibilities**:
-- Detect custom UI components that can be replaced with Mekari Pixel
+- Detect custom UI components that can be replaced with the target design system
 - Map manual styling (SCSS, inline styles) to design tokens
-- Transform components to use Pixel component library
+- Transform components to use the detected design system library
 - Validate design token usage and accessibility
 - Ensure consistent UI/UX across migration
 
@@ -44,7 +44,7 @@ skills:
 - **Element Plus** (element-plus)
 - **Vuetify** (vuetify)
 - **Quasar** (quasar)
-- **Mekari Pixel** (@mekari/pixel)
+- **Tailwind CSS** (tailwindcss) — utility-class based, no component prefix
 - **Custom Design System** (detect via token patterns)
 
 ### 2. Component Discovery & Mapping
@@ -136,14 +136,14 @@ skills:
 
 **Propose Transformation**:
 - Use `generatormcp_propose_component` for new component
-- Include Pixel component imports
+- Include design system component imports
 - Map props correctly
 - Preserve functionality
 
 ### 4. Validation & Quality
 
 **Check Component Usage**:
-- Verify Pixel component API matches usage
+- Verify design system component API matches usage
 - Validate required props provided
 - Check accessibility attributes
 - Ensure responsive behavior
@@ -212,7 +212,6 @@ Examples:
 - 'vuetify' → Vuetify
 - 'ant-design-vue' → Ant Design Vue
 - '@chakra-ui/vue' → Chakra UI
-- '@mekari/pixel' → Mekari Pixel
 - 'quasar' → Quasar Framework
 */
 ```
@@ -252,7 +251,6 @@ Examples:
 import { ElButton } from 'element-plus' → Element Plus Button
 import { VBtn } from 'vuetify' → Vuetify Button  
 import { AButton } from 'ant-design-vue' → Ant Design Button
-import { MpButton } from '@mekari/pixel' → Mekari Pixel Button
 */
 
 // Build component catalog from type definitions or docs
@@ -385,8 +383,8 @@ function calculateDSMigrationConfidence(component, dsInfo) {
 ### Coordinate with @transformer
 ```
 When @transformer creates new components:
-→ @design-system-migrator checks if Pixel component should be used
-→ If yes, propose Pixel alternative
+→ @design-system-migrator checks if a design system component should be used
+→ If yes, propose design system alternative
 → If no, approve custom component
 ```
 
@@ -394,7 +392,7 @@ When @transformer creates new components:
 ```
 @design-system-migrator proposes transformation
 → @validator checks:
-  - Pixel component API compliance
+  - Design system component API compliance
   - Design token usage
   - Accessibility standards
   - No hardcoded styling

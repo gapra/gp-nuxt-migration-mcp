@@ -15,7 +15,7 @@ description: Systematic workflow for migrating custom components and styling to 
 
 ## Overview
 
-This skill enables systematic transformation of custom-styled components into design system components with token-based theming. It **auto-detects** the design system used in the target codebase (Material UI, Ant Design, Element Plus, Vuetify, Chakra UI, Mekari Pixel, etc.) and adapts the migration strategy accordingly.
+This skill enables systematic transformation of custom-styled components into design system components with token-based theming. It **auto-detects** the design system used in the target codebase (Material UI, Ant Design, Element Plus, Vuetify, Chakra UI, Quasar, etc.) and adapts the migration strategy accordingly.
 
 ## Core Principle
 
@@ -85,11 +85,12 @@ const designSystemDetectors = {
     componentPrefix: 'Q',
     example: 'QBtn, QInput, QCard'
   },
-  '@mekari/pixel': {
-    name: 'Mekari Pixel',
-    framework: 'Vue 3',
-    componentPrefix: 'Mp',
-    example: 'MpButton, MpInput, MpCard'
+  'tailwindcss': {
+    name: 'Tailwind CSS',
+    framework: 'Agnostic',
+    componentPrefix: null,       // utility-class based, no component prefix
+    approach: 'utility-classes', // classes applied directly to HTML elements
+    example: 'bg-primary text-white px-4 py-2 rounded-lg'
   }
 };
 
@@ -248,6 +249,14 @@ const catalog = buildCatalog({
   usage: usedComponents,
   docs: componentList
 });
+
+// Special case: Tailwind CSS — no component imports, detect via class usage
+// Instead of component catalog, read tailwind.config.js for custom tokens
+if (dsInfo?.name === 'Tailwind CSS') {
+  const tailwindConfig = await readFile('tailwind.config.js');
+  const customTokens = parseTailwindTheme(tailwindConfig);
+  // Strategy: replace inline styles/SCSS with Tailwind utility classes
+}
 ```
 
 **Get Component Specifications**:
@@ -570,7 +579,7 @@ const antSize = computed(() => {
 ```typescript
 function calculateComponentMigrationConfidence(
   customComponent: CustomComponent,
-  pixelComponent: PixelComponent
+  dsComponent: DSComponent
 ): number {
   let confidence = 0.90; // Base confidence
   
@@ -581,7 +590,7 @@ function calculateComponentMigrationConfidence(
   // Reduce for prop mismatches
   const unmappableProps = findUnmappableProps(
     customComponent.props,
-    pixelComponent.props
+    dsComponent.props
   );
   confidence -= unmappableProps.length * 0.05;
   
@@ -590,10 +599,10 @@ function calculateComponentMigrationConfidence(
   if (hasComplexLayouts(customComponent)) confidence -= 0.08;
   
   // Reduce if slots don't match
-  if (!slotsCompatible(customComponent, pixelComponent)) confidence -= 0.10;
+  if (!slotsCompatible(customComponent, dsComponent)) confidence -= 0.10;
   
   // Increase for perfect matches
-  if (isExactMatch(customComponent, pixelComponent)) confidence = 0.95;
+  if (isExactMatch(customComponent, dsComponent)) confidence = 0.95;
   
   return Math.max(0.60, confidence);
 }
@@ -899,23 +908,23 @@ function validateAccessibility(component: Component): A11yIssues {
 }
 ```
 
-### Step 2: Ensure Pixel Component Handles A11y
+### Step 2: Ensure Design System Component Handles A11y
 
 ```typescript
-// Pixel components are pre-built with accessibility
+// Design system components are pre-built with accessibility
 // Verify they're used correctly
 
-function verifyPixelA11y(component: Component, pixelSpec: PixelSpec): boolean {
+function verifyDSA11y(component: Component, dsSpec: DSSpec): boolean {
   // Check required props for a11y
-  if (pixelSpec.accessibility.ariaLabel === 'required') {
+  if (dsSpec.accessibility.ariaLabel === 'required') {
     if (!component.props.ariaLabel && !component.props['aria-label']) {
       return false; // Missing required a11y prop
     }
   }
   
   // Check role is correct
-  if (pixelSpec.accessibility.role) {
-    // Pixel handles role internally, just verify usage is semantic
+  if (dsSpec.accessibility.role) {
+    // Design system handles role internally, just verify usage is semantic
   }
   
   return true;
@@ -929,8 +938,8 @@ function verifyPixelA11y(component: Component, pixelSpec: PixelSpec): boolean {
 Before proposing design system migration:
 
 ```markdown
-✅ Pixel component exists for this use case
-✅ All custom props mappable to Pixel props
+✅ Design system component exists for this use case
+✅ All custom props mappable to design system component props
 ✅ Design tokens used (no hardcoded values)
 ✅ Color contrast meets WCAG 2.1 AA (4.5:1 text, 3:1 UI)
 ✅ Component is keyboard accessible
@@ -967,6 +976,12 @@ Custom → Ant Design Vue:
 - PrimaryButton → AButton type="primary"
 - DangerButton → AButton danger
 - LinkButton → AButton type="link"
+
+Custom → Tailwind CSS (utility classes, no component swap):
+- CustomButton → <button class="bg-primary text-white px-4 py-2 rounded font-semibold hover:bg-primary/90">
+- PrimaryButton → class="bg-blue-600 text-white ..."
+- DangerButton → class="bg-red-600 text-white ..."
+- LinkButton → class="text-blue-600 underline hover:text-blue-800"
 ```
 
 ### Pattern 2: Form Controls
@@ -984,6 +999,7 @@ Examples:
 Element Plus: ElInput, ElSelect, ElCheckbox
 Vuetify: VTextField, VSelect, VCheckbox
 Ant Design: AInput, ASelect, ACheckbox
+Tailwind CSS: <input class="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500">
 ```
 
 ### Pattern 3: Feedback Components
@@ -999,6 +1015,8 @@ Custom → Design System:
 Element Plus: ElAlert, ElMessage, ElNotification
 Vuetify: VAlert, VSnackbar
 Ant Design: AAlert, AMessage, ANotification
+Tailwind CSS: <div class="bg-green-100 text-green-800 border border-green-300 rounded p-4"> (success)
+              <div class="bg-red-100 text-red-800 border border-red-300 rounded p-4"> (error)
 ```
 
 ### Pattern 4: Layout Components
@@ -1014,6 +1032,8 @@ Custom → Design System:
 Element Plus: ElContainer, ElRow/ElCol, ElCard, ElDialog, ElDrawer
 Vuetify: VContainer, VRow/VCol, VCard, VDialog, VNavigationDrawer
 Ant Design: ALayout, ARow/ACol, ACard, AModal, ADrawer
+Tailwind CSS: <div class="container mx-auto">, <div class="grid grid-cols-12 gap-4">,
+              <div class="bg-white rounded-lg shadow-md p-6">, <div class="fixed inset-0 z-50">
 ```
 
 ---

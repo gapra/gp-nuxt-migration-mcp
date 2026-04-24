@@ -816,7 +816,8 @@ The system implements a **multi-agent orchestration pattern** with specialized a
 **Supported Design Systems**:
 - Element Plus, Vuetify, Ant Design Vue, Quasar (Vue)
 - Material UI, Chakra UI (React/Vue)
-- Mekari Pixel (prefix: Mp - MpButton, MpInput, etc.), Custom Design Systems
+- Tailwind CSS (utility-class based)
+- Custom Design Systems
 
 **MCP Tools**: 
 - `file/read`, `directory/list` (auto-detection)
@@ -976,13 +977,13 @@ Skills are domain-specific workflows that agents invoke to perform complex tasks
 
 **Used By**: @design-system-migrator
 
-**Purpose**: Migrate custom components and styling to Mekari Pixel design system
+**Purpose**: Migrate custom components and styling to the target design system
 
 **Workflow**:
 1. **Discover Custom Components** - Scan for components with custom styling
-2. **Fetch Mekari Pixel Catalog** - Get available Pixel components and specs
-3. **Map to Pixel Components** - Match custom components to Pixel equivalents
-4. **Transform Components** - Replace with Pixel components and design tokens
+2. **Fetch Design System Catalog** - Get available components and specs from target design system
+3. **Map Components** - Match custom components to design system equivalents
+4. **Transform Components** - Replace with design system components and tokens
 5. **Apply Design Tokens** - Replace hardcoded colors, spacing, typography with tokens
 6. **Validate Accessibility** - Ensure WCAG 2.1 AA compliance
 7. **Verify Quality** - Check component API, props mapping, functionality
@@ -994,26 +995,8 @@ Skills are domain-specific workflows that agents invoke to perform complex tasks
 - **Border Radius**: sm (4px), md (8px), lg (12px), full (9999px)
 - **Shadows**: Elevation levels for depth
 
-**Component Mappings**:
-```typescript
-CustomButton → MButton (variant: primary|secondary|ghost|danger)
-CustomInput → MInput (type: text|email|password|number)
-CustomCard → MCard (variant: default|outlined|elevated)
-CustomAlert → MAlert (variant: success|error|warning|info)
-CustomModal → MModal
-CustomSelect → MSelect
-```
-
-**MCP Tools Used**:
-- `my-mcp-server_list-mekari-pixel-components-v2` - List available components
-- `my-mcp-server_fetch-mekari-pixel-component-v2` - Get component specs
-- `my-mcp-server_fetch-mekari-pixel-design-tokens-v2` - Fetch design tokens
-- `my-mcp-server_discover-mekari-pixel-components-v2` - Discover by category
-
 **Quality Standards**:
-- ✅ Use Mekari Pixel component (if available)
-- ✅ Replace all hardcoded values with tokens
-- ✅ Follow Pixel component API
+- ✅ Replace all hardcoded values with design tokens
 - ✅ Maintain original functionality
 - ✅ WCAG 2.1 AA accessibility (4.5:1 contrast)
 - ✅ Keyboard navigation support
