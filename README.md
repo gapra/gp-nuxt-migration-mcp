@@ -1,5 +1,9 @@
 # @gapra/nuxt-migration-mcp
 
+[![npm version](https://img.shields.io/npm/v/@gapra/nuxt-migration-mcp)](https://www.npmjs.com/package/@gapra/nuxt-migration-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/@gapra/nuxt-migration-mcp)](https://www.npmjs.com/package/@gapra/nuxt-migration-mcp)
+[![license](https://img.shields.io/npm/l/@gapra/nuxt-migration-mcp)](LICENSE)
+
 MCP (Model Context Protocol) Server for Nuxt 2/3 to Nuxt 3/4 migration analysis and automation.
 
 ## Overview
