@@ -1,0 +1,18 @@
+# Source files (only dist/ gets published, defined in package.json "files")
+src/
+.github/
+.migration/
+.vscode/
+node_modules/
+
+# Config & dev files
+tsconfig.json
+pnpm-lock.yaml
+*.test.ts
+.env
+.env.*
+.gitignore
+
+# Misc
+.DS_Store
+*.log

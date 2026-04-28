@@ -25,76 +25,175 @@ This MCP server provides tools to analyze and audit codebases for migration from
 
 ## Installation
 
+There are two ways to use this MCP server:
+
+| Method | Best For |
+|--------|----------|
+| **via npm / npx** | Quick setup, always latest version, no cloning needed |
+| **Local clone** | Development, customization, or contributing |
+
+---
+
+### Method 1: via npm (Recommended)
+
+No installation needed — use `npx` to run directly, or install globally.
+
+#### Option A: Run with `npx` (zero install)
+
 ```bash
-npm install @gapra/nuxt-migration-mcp
-# or globally
+npx @gapra/nuxt-migration-mcp
+```
+
+#### Option B: Install globally
+
+```bash
 npm install -g @gapra/nuxt-migration-mcp
+# then run:
+nuxt-migration-mcp
 ```
 
-For local development:
+#### Configure your MCP client
+
+**Claude Desktop** — edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "nuxt-migration": {
+      "command": "npx",
+      "args": ["@gapra/nuxt-migration-mcp"],
+      "env": {
+        "MIGRATION_SOURCE_PATH": "/path/to/your/nuxt2-project",
+        "MIGRATION_TARGET_PATH": "/path/to/your/nuxt4-project"
+      }
+    }
+  }
+}
+```
+
+**Cursor** — edit `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "nuxt-migration": {
+      "command": "npx",
+      "args": ["@gapra/nuxt-migration-mcp"],
+      "env": {
+        "MIGRATION_SOURCE_PATH": "/path/to/your/nuxt2-project",
+        "MIGRATION_TARGET_PATH": "/path/to/your/nuxt4-project"
+      }
+    }
+  }
+}
+```
+
+**VS Code** — edit `.vscode/mcp.json` in your workspace:
+
+```json
+{
+  "servers": {
+    "nuxt-migration": {
+      "command": "npx",
+      "args": ["@gapra/nuxt-migration-mcp"],
+      "env": {
+        "MIGRATION_SOURCE_PATH": "/path/to/your/nuxt2-project",
+        "MIGRATION_TARGET_PATH": "/path/to/your/nuxt4-project"
+      }
+    }
+  }
+}
+```
+
+---
+
+### Method 2: Local Clone
+
+Use this if you want to customize the server, contribute, or run in development mode.
+
+#### Step 1: Clone and install
 
 ```bash
-git clone https://github.com/gapraart/nuxt-migration-mcp.git
-cd nuxt-migration-mcp
+git clone https://github.com/gapra/gp-nuxt-migration-mcp.git
+cd gp-nuxt-migration-mcp
 npm install
-# or
-pnpm install
+npm run build
 ```
 
-## Configuration
-
-Create a `.env` file or set environment variables:
+#### Step 2: Create `.env` file
 
 ```bash
-MIGRATION_SOURCE_PATH=/path/to/your/nuxt2/project
-MIGRATION_TARGET_PATH=/path/to/your/nuxt4/project
+cp .env.example .env
 ```
 
-### Auto-detect .env
+Edit `.env`:
 
-The MCP server automatically searches for `.env` files in:
-1. Current working directory (`./.env`)
-2. Parent directory (`../.env`)
+```bash
+MIGRATION_SOURCE_PATH=/path/to/your/nuxt2-project
+MIGRATION_TARGET_PATH=/path/to/your/nuxt4-project
+```
 
-This means you can place your `.env` file in either location and the server will automatically detect it.
+> **Auto-detect:** The server automatically searches for `.env` in the current directory and parent directory.
 
-## Quick Start with `start_migration`
+#### Step 3: Configure your MCP client
 
-The easiest way to start a migration is to use the `start_migration` tool. It automatically:
-- Detects `MIGRATION_SOURCE_PATH` from `.env` or environment variables
-- Runs a comprehensive audit of the entire codebase
-- Returns results for all categories: nuxt, vuex, mixins, api, components, tracking
+**Claude Desktop** — edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
-  "name": "start_migration",
-  "arguments": {}
-}
-```
-
-You can also override paths or specify a module:
-
-```json
-{
-  "name": "start_migration",
-  "arguments": {
-    "sourcePath": "/path/to/nuxt2",
-    "targetPath": "/path/to/nuxt3",
-    "module": "deals"
+  "mcpServers": {
+    "nuxt-migration": {
+      "command": "node",
+      "args": ["/absolute/path/to/nuxt-migration-mcp/dist/index.js"],
+      "env": {
+        "MIGRATION_SOURCE_PATH": "/path/to/your/nuxt2-project",
+        "MIGRATION_TARGET_PATH": "/path/to/your/nuxt4-project"
+      }
+    }
   }
 }
 ```
 
-### Using Custom Config Path
+**Cursor** — edit `~/.cursor/mcp.json`:
 
 ```json
 {
-  "name": "start_migration",
-  "arguments": {
-    "configPath": "/path/to/custom.env"
+  "mcpServers": {
+    "nuxt-migration": {
+      "command": "node",
+      "args": ["/absolute/path/to/nuxt-migration-mcp/dist/index.js"],
+      "env": {
+        "MIGRATION_SOURCE_PATH": "/path/to/your/nuxt2-project",
+        "MIGRATION_TARGET_PATH": "/path/to/your/nuxt4-project"
+      }
+    }
   }
 }
 ```
+
+**VS Code** — edit `.vscode/mcp.json` in your workspace:
+
+```json
+{
+  "servers": {
+    "nuxt-migration": {
+      "command": "node",
+      "args": ["/absolute/path/to/nuxt-migration-mcp/dist/index.js"],
+      "env": {
+        "MIGRATION_SOURCE_PATH": "/path/to/your/nuxt2-project"
+      }
+    }
+  }
+}
+```
+
+#### Development mode (watch)
+
+```bash
+npm run dev
+```
+
+
 
 ## Harness Engineering Architecture (NEW!)
 
@@ -231,37 +330,47 @@ npm run mcp:dev:generator
 npm run mcp:dev:orchestrator
 ```
 
-## Usage
 
-### Standalone
+## Quick Start
 
-```bash
-# Development
-npm run dev
-
-# Build and run
-npm run build
-npm start
-```
-
-### MCP Client Integration
-
-Configure your MCP client (e.g., VS Code, Claude Desktop, Cursor) to connect to this server:
+Once your MCP client is configured (see [Installation](#installation)), use the `start_migration` tool to kick off a full audit:
 
 ```json
 {
-  "mcpServers": {
-    "nuxt-migration": {
-      "command": "node",
-      "args": ["/path/to/nuxt-migration-mcp/dist/index.js"],
-      "env": {
-        "MIGRATION_SOURCE_PATH": "/path/to/nuxt2/project",
-        "MIGRATION_TARGET_PATH": "/path/to/nuxt4/project"
-      }
-    }
+  "name": "start_migration",
+  "arguments": {}
+}
+```
+
+The tool will automatically:
+- Detect `MIGRATION_SOURCE_PATH` from your `.env` or environment variables
+- Run a full audit of the codebase (Vuex, mixins, API, components, tracking)
+- Return a prioritized migration plan
+
+### With specific module or paths
+
+```json
+{
+  "name": "start_migration",
+  "arguments": {
+    "sourcePath": "/path/to/nuxt2",
+    "targetPath": "/path/to/nuxt3",
+    "module": "deals"
   }
 }
 ```
+
+### With custom config path
+
+```json
+{
+  "name": "start_migration",
+  "arguments": {
+    "configPath": "/path/to/custom.env"
+  }
+}
+```
+
 
 ## Workflow
 
