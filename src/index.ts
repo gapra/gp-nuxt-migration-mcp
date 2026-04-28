@@ -8,6 +8,9 @@ import { loadConfig, getSourcePath, getTargetPath } from "./core/config.js";
 import * as tools from "./tools/index.js";
 import { generateAndWrite, writeFileToTarget, generatePiniaStore, generateComposable, generateVueComponent, generateApiFunction, generateType } from "./tools/generator.js";
 import { listTargetStructure, generateFromAudit } from "./tools/directory.js";
+import { auditEsmCompatibility } from "./tools/esm-compat.js";
+import { auditNuxt4Structure } from "./tools/nuxt4-structure.js";
+import { auditDeprecatedModules } from "./tools/nuxt-migration.js";
 
 const TOOLS = [
   {
@@ -429,6 +432,86 @@ const TOOLS = [
       required: ["files"],
     },
   },
+  {
+    name: "audit_async_data",
+    description:
+      "Detect Nuxt 2 asyncData() and fetch() lifecycle hooks that must be converted to useAsyncData() or useFetch() in Nuxt 3/4.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        module: {
+          type: "string",
+          description: "Optional module path to audit",
+        },
+      },
+    },
+  },
+  {
+    name: "audit_esm_compatibility",
+    description:
+      "Audit source codebase for CommonJS patterns (require, module.exports, __dirname) incompatible with Nuxt 3/4 ESM-only environment.",
+    inputSchema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
+    name: "audit_nuxt4_structure",
+    description:
+      "Audit the project directory structure for Nuxt 4 compatibility. Nuxt 4 requires source files inside an app/ subdirectory.",
+    inputSchema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
+    name: "audit_deprecated_modules",
+    description:
+      "Detect deprecated @nuxtjs/* modules in package.json and nuxt.config that are incompatible with Nuxt 3/4. Suggests modern replacements.",
+    inputSchema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
+    name: "generate_async_data_composable",
+    description:
+      "Generate a useAsyncData composable to replace Nuxt 2 asyncData() or fetch() lifecycle hooks.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description: "Composable name (e.g., 'usePosts')",
+        },
+        relativePath: {
+          type: "string",
+          description: "Relative path in target (e.g., 'composables/usePosts.ts')",
+        },
+        module: {
+          type: "string",
+          description: "Optional module name",
+        },
+        targetPath: {
+          type: "string",
+          description: "Optional absolute target path override",
+        },
+        endpoint: {
+          type: "string",
+          description: "API endpoint to fetch from",
+        },
+        key: {
+          type: "string",
+          description: "Cache key for useAsyncData",
+        },
+        hasLazyLoad: {
+          type: "boolean",
+          description: "Whether to use lazy loading",
+        },
+      },
+      required: ["name", "relativePath"],
+    },
+  },
 ];
 
 class MigrationMCPServer {
@@ -437,7 +520,7 @@ class MigrationMCPServer {
   constructor() {
     this.server = new Server(
       {
-        name: "nuxt-migration-mcp",
+        name: "@gapra/nuxt-migration-mcp",
         version: "1.0.0",
       },
       {
@@ -496,6 +579,9 @@ class MigrationMCPServer {
             apiReport,
             componentsReport,
             trackingReport,
+            esmReport,
+            structureReport,
+            deprecatedReport,
           ] = await Promise.all([
             tools.auditNuxtMigration({ module: moduleToMigrate }),
             tools.auditVuexStores({ module: moduleToMigrate }),
@@ -503,6 +589,9 @@ class MigrationMCPServer {
             tools.auditApiMigration(),
             tools.auditComponentMigration(),
             tools.auditTracking({ module: moduleToMigrate }),
+            auditEsmCompatibility(),
+            auditNuxt4Structure(),
+            auditDeprecatedModules(),
           ]);
 
           return {
@@ -518,14 +607,21 @@ class MigrationMCPServer {
               api: apiReport,
               components: componentsReport,
               tracking: trackingReport,
+              esm: esmReport,
+              structure: structureReport,
+              deprecatedModules: deprecatedReport,
             },
             recommendedOrder: [
-              "1. Types/Interfaces - Define TypeScript types first",
-              "2. API Layer - Create API functions",
-              "3. Store (Pinia) - Create state management",
-              "4. Composables - Create reusable logic",
-              "5. Components - Create UI components",
-              "6. Pages - Create page components",
+              "0. ESM Compatibility — Fix require() and module.exports first",
+              "0. Directory Structure — Set up app/ directory for Nuxt 4",
+              "0. Deprecated Modules — Replace @nuxtjs/* with modern alternatives",
+              "1. Types/Interfaces — Define TypeScript types first",
+              "2. API Layer — Create API functions (replace RxJS + @nuxtjs/axios)",
+              "3. Store (Pinia) — Migrate Vuex stores",
+              "4. Composables — Migrate mixins + asyncData/fetch hooks",
+              "5. Plugins/Middleware — Update to defineNuxtPlugin/defineNuxtRouteMiddleware",
+              "6. Components — Migrate Options API to Composition API",
+              "7. Pages — Create page components",
             ],
           };
         }
@@ -666,6 +762,33 @@ class MigrationMCPServer {
             results,
           };
         }
+
+        case "audit_async_data":
+          return await tools.auditNuxtMigration({ module: args.module as string | undefined });
+
+        case "audit_esm_compatibility":
+          return await auditEsmCompatibility();
+
+        case "audit_nuxt4_structure":
+          return await auditNuxt4Structure();
+
+        case "audit_deprecated_modules":
+          return await auditDeprecatedModules();
+
+        case "generate_async_data_composable":
+          return generateAndWrite({
+            type: "async-data",
+            name: args.name as string,
+            relativePath: args.relativePath as string,
+            module: args.module as string | undefined,
+            targetPath: args.targetPath as string | undefined,
+            options: {
+              name: args.name as string,
+              endpoint: args.endpoint as string | undefined,
+              key: args.key as string | undefined,
+              hasLazyLoad: args.hasLazyLoad as boolean | undefined,
+            },
+          });
 
         default:
           throw new Error(`Unknown tool: ${toolName}`);

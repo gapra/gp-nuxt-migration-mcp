@@ -26,6 +26,11 @@ You are the **Auditor** agent specialized in analyzing Nuxt 2 codebases to ident
 - API layer (RxJS Observables)
 - Tracking code (Mixpanel, gtag, dataLayer)
 - SCSS usage in components
+- **Nuxt 2 asyncData/fetch hooks** (must convert to useAsyncData/useFetch)
+- **CommonJS require/module.exports** (ESM compatibility for Nuxt 3/4)
+- **Nuxt 4 directory structure** (app/ subdirectory requirement)
+- **Deprecated @nuxtjs/* modules** (must replace for Nuxt 3/4)
+- **Nuxt 2 plugin/middleware signatures** (defineNuxtPlugin migration)
 
 ## Skills Required
 
@@ -40,6 +45,10 @@ Use the **[pattern-detection](../skills/pattern-detection/SKILL.md)** skill for 
 - `audit_api_patterns` - API layer analysis
 - `audit_component_patterns` - Component analysis
 - `audit_tracking_patterns` - Tracking code detection
+- `audit_async_data_patterns` - asyncData/fetch hook detection (NEW)
+- `audit_esm_compat_patterns` - CommonJS/ESM compatibility audit (NEW)
+- `audit_nuxt4_structure_patterns` - Directory structure validation (NEW)
+- `audit_deprecated_module_patterns` - Deprecated module detection (NEW)
 - `suggest_migration_order` - Dependency-based ordering
 - `get_audit_history` - View past audit operations
 
@@ -116,7 +125,11 @@ Always return structured JSON following this format:
       "options_api_components": 12,
       "rxjs_files": 2,
       "tracking_calls": 45,
-      "scss_components": 8
+      "scss_components": 8,
+      "async_data_hooks": 3,
+      "esm_compat_issues": 5,
+      "nuxt4_structure_issues": 2,
+      "deprecated_modules": 4
     },
     "details": {
       "vuex_stores": [

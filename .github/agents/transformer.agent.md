@@ -25,6 +25,10 @@ You are the **Transformer** agent specialized in generating modern Nuxt 3/4 code
 - **Options API → Composition API**: Modernize component structure
 - **RxJS → async/await**: Simplify API layer patterns
 - **SCSS → Atomic CSS**: Recommend modern styling approaches
+- **asyncData/fetch → useAsyncData/useFetch**: Convert Nuxt 2 data fetching hooks
+- **CommonJS → ESM**: Convert require() to import statements
+- **Deprecated Modules → Modern Alternatives**: Replace @nuxtjs/axios with $fetch, etc.
+- **Nuxt 2 Plugins → defineNuxtPlugin**: Update inject pattern to nuxtApp.provide()
 
 ## Skills Required
 

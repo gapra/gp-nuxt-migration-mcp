@@ -1,7 +1,7 @@
 {
-  "name": "nuxt-migration-mcp",
+  "name": "@gapra/nuxt-migration-mcp",
   "version": "1.0.0",
-  "description": "MCP Server for Nuxt 2 to Nuxt 4 migration analysis and automation",
+  "description": "MCP Server for Nuxt 2/3 to Nuxt 3/4 migration analysis and automation",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -21,11 +21,14 @@
   "keywords": [
     "mcp",
     "nuxt",
+    "nuxt4",
     "migration",
     "vue2",
     "vue3",
     "pinia",
-    "typescript"
+    "typescript",
+    "esm",
+    "tailwindcss"
   ],
   "author": "Gapra (gapraart@gmail.com)",
   "license": "MIT",

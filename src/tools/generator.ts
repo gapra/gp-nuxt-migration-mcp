@@ -221,6 +221,37 @@ ${methodsCode}
 `;
 }
 
+export interface AsyncDataGeneratorOptions extends GeneratorOptions {
+  endpoint?: string;
+  key?: string;
+  hasLazyLoad?: boolean;
+}
+
+export function generateUseAsyncDataComposable(options: AsyncDataGeneratorOptions): string {
+  const { name, endpoint = "/api/data", key, hasLazyLoad = false } = options;
+  const composableName = name.startsWith("use") ? name : `use${name}`;
+  const cacheKey = key || name.toLowerCase().replace(/^use/, "");
+
+  return `import { useAsyncData, useFetch } from '#imports';
+
+// Migrated from Nuxt 2 asyncData() / fetch() lifecycle hooks
+export function ${composableName}() {
+  const { data, pending, error, refresh } = useAsyncData(
+    '${cacheKey}',
+    () => $fetch('${endpoint}'),
+    ${hasLazyLoad ? "{ lazy: true }" : "{ server: true }"}
+  );
+
+  return {
+    data,
+    pending,
+    error,
+    refresh,
+  };
+}
+`;
+}
+
 export function generateType(options: GeneratorOptions): string {
   const { name } = options;
   const typeName = name.endsWith("Type") ? name : `${name}Type`;
@@ -273,12 +304,12 @@ export function writeFileToTarget(options: WriteFileOptions): { success: boolean
 }
 
 export interface GenerateAndWriteOptions {
-  type: "store" | "composable" | "component" | "api" | "type";
+  type: "store" | "composable" | "component" | "api" | "type" | "async-data";
   name: string;
   relativePath: string;
   module?: string;
   targetPath?: string;
-  options?: StoreGeneratorOptions | ComposableGeneratorOptions | ComponentGeneratorOptions | ApiGeneratorOptions;
+  options?: StoreGeneratorOptions | ComposableGeneratorOptions | ComponentGeneratorOptions | ApiGeneratorOptions | AsyncDataGeneratorOptions;
 }
 
 export function generateAndWrite(options: GenerateAndWriteOptions): { success: boolean; filePath: string; content: string; error?: string } {
@@ -301,6 +332,9 @@ export function generateAndWrite(options: GenerateAndWriteOptions): { success: b
       break;
     case "type":
       content = generateType({ name });
+      break;
+    case "async-data":
+      content = generateUseAsyncDataComposable(options.options as AsyncDataGeneratorOptions || { name });
       break;
   }
 
@@ -338,6 +372,7 @@ function getFileExtension(type: string, relativePath: string, name: string): str
     case "api":
       return relativePath.endsWith(".ts") ? relativePath : `${relativePath}.ts`;
     case "type":
+    case "async-data":
       return relativePath.endsWith(".ts") ? relativePath : `${relativePath}.ts`;
     default:
       return relativePath;
