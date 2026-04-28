@@ -96,3 +96,43 @@ export interface ToolDefinition {
 export interface ToolHandler {
   (args: Record<string, unknown>): Promise<unknown>;
 }
+
+export interface Nuxt4StructureReport {
+  summary: {
+    hasAppDirectory: boolean;
+    misplacedCount: number;
+  };
+  misplaced: Array<{
+    currentPath: string;
+    suggestedPath: string;
+    type: string;
+  }>;
+  recommendations: string[];
+}
+
+export interface EsmCompatReport {
+  summary: {
+    filesWithRequire: number;
+    filesWithModuleExports: number;
+    filesWithDirname: number;
+    totalIssues: number;
+  };
+  files: Array<{
+    path: string;
+    issues: string[];
+  }>;
+  recommendations: string[];
+}
+
+export interface DeprecatedModulesReport {
+  summary: {
+    totalFound: number;
+    criticalCount: number;
+  };
+  modules: Array<{
+    name: string;
+    severity: "error" | "warning" | "info";
+    replacement: string;
+  }>;
+  recommendations: string[];
+}

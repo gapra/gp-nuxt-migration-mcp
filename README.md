@@ -1,27 +1,40 @@
-# Nuxt Migration MCP Server
+# @gapra/nuxt-migration-mcp
 
-MCP (Model Context Protocol) Server for Nuxt 2 to Nuxt ^3 migration analysis and automation.
+MCP (Model Context Protocol) Server for Nuxt 2/3 to Nuxt 3/4 migration analysis and automation.
 
 ## Overview
 
-This MCP server provides tools to analyze and audit codebases for migration from Nuxt 2 (Vue 2) to Nuxt ^3 (Vue 3). It can be integrated with AI assistants like Claude, Cursor, or other MCP-compatible clients.
+This MCP server provides tools to analyze and audit codebases for migration from Nuxt 2 (Vue 2) to Nuxt 3/4 (Vue 3). It can be integrated with AI assistants like Claude, Cursor, or other MCP-compatible clients.
 
 ## Features
 
-- **Start Migration** - One-command to auto-detect config and run full audit
-- **Audit Nuxt Migration** - Detect Options API, Vuex, SCSS, RxJS, mixins patterns
+- **Start Migration** - One-command full audit covering all migration categories
+- **Audit Nuxt Migration** - Detect Options API, Vuex, SCSS, RxJS, mixins, asyncData/fetch, plugin signatures
 - **Audit Tracking** - Find analytics/tracking calls (Mixpanel, gtag, dataLayer) and feature flags
 - **Audit Vuex Stores** - Analyze Vuex stores and suggest Pinia migration
 - **Audit Mixins** - Find Vue mixins and suggest composable conversion
 - **Audit API Migration** - Detect RxJS usage and suggest async/await pattern
 - **Audit Components** - Find components using Options API and SCSS
-- **Generate Code** - Create Pinia stores, composables, components, API functions, and types in target Nuxt 4 codebase
+- **Audit asyncData/fetch** - Detect Nuxt 2 data fetching hooks that require useAsyncData/useFetch migration
+- **Audit ESM Compatibility** - Find CommonJS require/module.exports incompatible with Nuxt 3/4
+- **Audit Nuxt 4 Structure** - Check project directory layout for app/ subdirectory requirement
+- **Audit Deprecated Modules** - Detect deprecated @nuxtjs/* packages and suggest replacements
+- **Generate Code** - Create Pinia stores, composables, components, API functions, useAsyncData composables, and types
 - **Write Files** - Write custom content directly to target codebase
 - **Auto-detect .env** - Automatically finds MIGRATION_SOURCE_PATH from .env file
 
 ## Installation
 
 ```bash
+npm install @gapra/nuxt-migration-mcp
+# or globally
+npm install -g @gapra/nuxt-migration-mcp
+```
+
+For local development:
+
+```bash
+git clone https://github.com/gapraart/nuxt-migration-mcp.git
 cd nuxt-migration-mcp
 npm install
 # or
@@ -425,33 +438,54 @@ Then write the results:
 
 ## Available Tools
 
-### Audit Tools (Source - Nuxt 2)
+### Audit Tools (Source - Nuxt 2/3)
 
-| Tool                    | Description                                    | Module Support |
-| ----------------------- | ---------------------------------------------- |----------------|
-| `start_migration`       | Auto-detect config and run full audit in one command | ✅ (optional)  |
-| `audit_nuxt_migration`  | Full codebase audit for all migration patterns | ✅             |
-| `audit_tracking`        | Find analytics calls and feature flags         | ✅             |
-| `audit_vuex_stores`     | Analyze Vuex stores for Pinia migration        | ✅             |
-| `audit_mixins`          | Find mixins for composable conversion          | ✅             |
-| `audit_api_migration`  | Find RxJS for async/await conversion           | ✅             |
-| `audit_components`      | Analyze Vue components for Options API         | ✅             |
-| `get_migration_summary` | Get migration status and recommended order     | -              |
-| `configure_migration`  | Set source/target paths dynamically            | -              |
+| Tool                        | Description                                               | Module Support |
+| --------------------------- | --------------------------------------------------------- | -------------- |
+| `start_migration`           | Auto-detect config and run full audit in one command      | ✅ (optional)  |
+| `audit_nuxt_migration`      | Full codebase audit for all migration patterns            | ✅             |
+| `audit_async_data`          | Detect asyncData/fetch hooks → useAsyncData/useFetch      | ✅             |
+| `audit_esm_compatibility`   | Find CommonJS require/module.exports (ESM incompatible)   | -              |
+| `audit_nuxt4_structure`     | Check directory structure for Nuxt 4 app/ requirement     | -              |
+| `audit_deprecated_modules`  | Detect deprecated @nuxtjs/* packages, suggest replacements | -              |
+| `audit_tracking`            | Find analytics calls and feature flags                    | ✅             |
+| `audit_vuex_stores`         | Analyze Vuex stores for Pinia migration                   | ✅             |
+| `audit_mixins`              | Find mixins for composable conversion                     | ✅             |
+| `audit_api_migration`       | Find RxJS for async/await conversion                      | ✅             |
+| `audit_components`          | Analyze Vue components for Options API                    | ✅             |
+| `get_migration_summary`     | Get migration status and recommended order                | -              |
+| `configure_migration`       | Set source/target paths dynamically                       | -              |
 
-### Code Generation Tools (Target - Nuxt 4)
+### Code Generation Tools (Target - Nuxt 3/4)
 
-| Tool                    | Description                                    | Module Support |
-| ----------------------- | ---------------------------------------------- |----------------|
-| `generate_pinia_store`  | Generate Pinia store with state, actions, getters | ✅             |
-| `generate_composable`   | Generate Vue composable with Composition API    | ✅             |
-| `generate_component`    | Generate Vue component with `<script setup>`    | ✅             |
-| `generate_api`          | Generate API functions with async/await         | ✅             |
-| `generate_type`         | Generate TypeScript interface                  | ✅             |
-| `write_file`            | Write custom content to target codebase        | ✅             |
-| `list_target_structure` | List target folder structure                   | ✅             |
-| `generate_from_audit`   | Auto-generate files from audit with mapping    | ✅             |
-| `write_generated_files` | Write multiple generated files at once        | ✅             |
+| Tool                              | Description                                         | Module Support |
+| --------------------------------- | --------------------------------------------------- | -------------- |
+| `generate_pinia_store`            | Generate Pinia store with state, actions, getters   | ✅             |
+| `generate_composable`             | Generate Vue composable with Composition API        | ✅             |
+| `generate_async_data_composable`  | Generate useAsyncData composable from asyncData()   | ✅             |
+| `generate_component`              | Generate Vue component with `<script setup>`        | ✅             |
+| `generate_api`                    | Generate API functions with async/await             | ✅             |
+| `generate_type`                   | Generate TypeScript interface                       | ✅             |
+| `write_file`                      | Write custom content to target codebase             | ✅             |
+| `list_target_structure`           | List target folder structure                        | ✅             |
+| `generate_from_audit`             | Auto-generate files from audit with mapping         | ✅             |
+| `write_generated_files`           | Write multiple generated files at once              | ✅             |
+
+## Migration Coverage (2026)
+
+| Pattern | Nuxt 2 | Nuxt 3/4 | Detection | Generator |
+| ------- | ------ | -------- | --------- | --------- |
+| Options API | `export default {}` | `<script setup>` | ✅ | ✅ |
+| Vuex | `Vuex.Store` | Pinia | ✅ | ✅ |
+| Mixins | `mixins: []` | Composables | ✅ | ✅ |
+| RxJS | Observables | async/await | ✅ | ✅ |
+| asyncData/fetch | Lifecycle hooks | useAsyncData/useFetch | ✅ | ✅ |
+| ESM Compatibility | require/CJS | import/ESM | ✅ | - |
+| Directory Structure | Flat root | app/ subdirectory | ✅ | - |
+| Deprecated Modules | @nuxtjs/axios, @nuxtjs/auth, etc. | $fetch, nuxt-auth-utils | ✅ | - |
+| Plugin Signatures | inject context | defineNuxtPlugin | ✅ | - |
+| Tailwind v3 → v4 | @tailwind directives | @import 'tailwindcss' | ✅ | - |
+| SCSS | @import, @mixin | Atomic CSS / design tokens | ✅ | - |
 
 ## Example Output
 

@@ -32,20 +32,31 @@ You are the **Migration Orchestrator** agent responsible for coordinating the co
 
 ### Phase 1: AUDIT
 1. Spawn **@auditor** agents to scan source codebase
-2. Collect all audit results
+2. Collect all audit results including new 2026 patterns:
+   - ESM compatibility issues (require/module.exports)
+   - Nuxt 4 directory structure (app/ subdirectory)
+   - Deprecated @nuxtjs/* modules
+   - asyncData/fetch lifecycle hooks
+   - Nuxt 2 plugin/middleware signatures
 3. Validate audit completeness
 4. Generate migration recommendations
 5. Update state: `current_phase = "audit"` → `"transform"`
 
 ### Phase 2: TRANSFORM
 1. Review audit results and recommendations
-2. Spawn **@transformer** agents for each migration type:
+2. **Resolve prerequisites first** (before component/page migration):
+   - Fix ESM compatibility issues (require → import)
+   - Set up app/ directory structure if needed (Nuxt 4)
+   - Replace deprecated @nuxtjs/* modules
+3. Spawn **@transformer** agents for each migration type:
    - Vuex → Pinia stores
    - Mixins → Composables
+   - asyncData/fetch → useAsyncData/useFetch
    - Options API → Composition API
    - RxJS → async/await
-3. Collect transformation proposals
-4. Update state: `current_phase = "transform"` → `"validate"`
+   - Nuxt 2 plugins/middleware → defineNuxtPlugin/defineNuxtRouteMiddleware
+4. Collect transformation proposals
+5. Update state: `current_phase = "transform"` → `"validate"`
 
 ### Phase 3: VALIDATE
 1. Spawn **@validator** agents to review proposals

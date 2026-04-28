@@ -6,3 +6,5 @@ export * from "./api-migration.js";
 export * from "./component-migration.js";
 export * from "./generator.js";
 export * from "./directory.js";
+export * from "./esm-compat.js";
+export * from "./nuxt4-structure.js";
