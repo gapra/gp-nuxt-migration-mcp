@@ -1,6 +1,6 @@
 {
   "name": "@gapra/nuxt-migration-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP Server for Nuxt 2/3 to Nuxt 3/4 migration analysis and automation",
   "type": "module",
   "main": "dist/index.js",
