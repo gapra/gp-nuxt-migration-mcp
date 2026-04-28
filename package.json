@@ -4,8 +4,16 @@
   "description": "MCP Server for Nuxt 2/3 to Nuxt 3/4 migration analysis and automation",
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "nuxt-migration-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
+    "postbuild": "node -e \"const fs=require('fs');const f='dist/index.js';const c=fs.readFileSync(f,'utf8');if(!c.startsWith('#!/usr/bin/env node')){fs.writeFileSync(f,'#!/usr/bin/env node\\n'+c);}fs.chmodSync(f,'755');\"",
+    "prepublishOnly": "npm run build",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",
@@ -32,6 +40,14 @@
   ],
   "author": "Gapra (gapraart@gmail.com)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gapra/gp-nuxt-migration-mcp.git"
+  },
+  "homepage": "https://github.com/gapra/gp-nuxt-migration-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/gapra/gp-nuxt-migration-mcp/issues"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "glob": "^11.0.0",
