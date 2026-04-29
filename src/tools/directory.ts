@@ -372,7 +372,6 @@ export function ${composableName}() {
 }
 
 function generateComponentTemplate(name: string): string {
-  const componentName = name.endsWith(".vue") ? name : `${name}.vue`;
   return `<script setup lang="ts">
 import { ref, computed } from 'vue';
 
@@ -409,35 +408,32 @@ const emit = defineEmits<{
 }
 
 function generateApiTemplate(name: string): string {
+  const upper = name.charAt(0).toUpperCase() + name.slice(1);
+  const lower = name.toLowerCase();
   return `// API functions for ${name}
-export async function get${name.charAt(0).toUpperCase() + name.slice(1)}() {
-  const response = await fetch('/api/${name.toLowerCase()}');
-  return response.json();
+// Uses Nuxt 3/4 built-in $fetch (auto-imported)
+export async function get${upper}() {
+  return $fetch('/api/${lower}');
 }
 
-export async function create${name.charAt(0).toUpperCase() + name.slice(1)}(data: any) {
-  const response = await fetch('/api/${name.toLowerCase()}', {
+export async function create${upper}(data: any) {
+  return $fetch('/api/${lower}', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: data,
   });
-  return response.json();
 }
 
-export async function update${name.charAt(0).toUpperCase() + name.slice(1)}(id: string, data: any) {
-  const response = await fetch(\`/api/${name.toLowerCase()}/\${id}\`, {
+export async function update${upper}(id: string, data: any) {
+  return $fetch(\`/api/${lower}/\${id}\`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: data,
   });
-  return response.json();
 }
 
-export async function delete${name.charAt(0).toUpperCase() + name.slice(1)}(id: string) {
-  const response = await fetch(\`/api/${name.toLowerCase()}/\${id}\`, {
+export async function delete${upper}(id: string) {
+  return $fetch(\`/api/${lower}/\${id}\`, {
     method: 'DELETE',
   });
-  return response.json();
 }
 `;
 }
