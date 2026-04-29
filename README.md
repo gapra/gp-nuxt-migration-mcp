@@ -8,7 +8,7 @@ MCP (Model Context Protocol) Server for Nuxt 2/3 to Nuxt 3/4 migration analysis 
 
 ## Overview
 
-This MCP server provides tools to analyze and audit codebases for migration from Nuxt 2 (Vue 2) to Nuxt 3/4 (Vue 3). It can be integrated with AI assistants like Claude, Cursor, or other MCP-compatible clients.
+This MCP server provides tools to **analyze, audit, and automatically migrate** codebases from Nuxt 2 (Vue 2) to Nuxt 3 / Nuxt 4 (Vue 3) — covering everything from detection to code generation and file writing. It can be integrated with any MCP-compatible AI assistant or editor, including **Claude** (Anthropic), **Cursor**, **GitHub Copilot**, **Windsurf**, **Cline**, **Continue**, **Zed**, and more.
 
 ## Features
 
