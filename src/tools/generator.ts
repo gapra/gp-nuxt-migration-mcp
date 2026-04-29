@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
-import { getTargetPath, getSourcePath } from "../core/config.js";
+import { getTargetPath } from "../core/config.js";
 
 export interface GeneratorOptions {
   name: string;
@@ -204,14 +204,10 @@ export function generateApiFunction(options: ApiGeneratorOptions): string {
     .map((method) => {
       const methodUpper = method.toUpperCase();
       return `export async function ${method}${apiName}(data?: any) {
-  const response = await fetch('/api/${name.toLowerCase()}', {
+  return $fetch('/api/${name.toLowerCase()}', {
     method: '${methodUpper}',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: data ? JSON.stringify(data) : undefined,
+    body: data,
   });
-  return response.json();
 }`;
     })
     .join("\n\n");
@@ -338,7 +334,7 @@ export function generateAndWrite(options: GenerateAndWriteOptions): { success: b
       break;
   }
 
-  const fullRelativePath = getFileExtension(type, relativePath, name);
+  const fullRelativePath = getFileExtension(type, relativePath);
   
   const modulePrefix = module ? `${module}/` : "";
   const finalRelativePath = fullRelativePath.includes("/") 
@@ -357,7 +353,7 @@ export function generateAndWrite(options: GenerateAndWriteOptions): { success: b
   };
 }
 
-function getFileExtension(type: string, relativePath: string, name: string): string {
+function getFileExtension(type: string, relativePath: string): string {
   if (relativePath.includes("/")) {
     return relativePath;
   }
