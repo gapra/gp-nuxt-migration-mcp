@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-04-29
+
+### Changed
+- Code generation templates now use Nuxt 3/4 built-in `$fetch` instead of native `fetch()` — aligns with Nuxt best practices and removes false-positive network access detection by supply chain security scanners
+- Add `CHANGELOG.md` to published npm package files
+
 ## [1.2.0] - 2026-04-29
 
 ### Fixed
