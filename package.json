@@ -1,6 +1,6 @@
 {
   "name": "@gapra/nuxt-migration-mcp",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "MCP Server for AI-assisted Nuxt 2/3 to Nuxt 3/4 migration — audits Options API, Vuex, asyncData, ESM compatibility, and generates Pinia/Composable code",
   "type": "module",
   "main": "dist/index.js",
