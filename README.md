@@ -705,9 +705,9 @@ MIGRATION_SOURCE_PATH=/path/to/project-b
 
 You can configure your AI client to automatically call `start_migration` when the user wants to migrate Nuxt 2 to Nuxt 3/4. This way, users can simply type natural language prompts like:
 
-- "migrate nuxt 2 ke nuxt 4"
+- "migrate nuxt 2 to nuxt 4"
 - "upgrade to nuxt 3"
-- "migrasikan project ini ke nuxt"
+- "migrate this project to nuxt"
 - "start migration for pages/integrations/emails"
 
 ### Claude Desktop
@@ -725,7 +725,7 @@ Edit your Claude Desktop config at `~/Library/Application Support/Claude/setting
       }
     }
   },
-  "instructions": "When user wants to migrate Nuxt 2 to Nuxt 3/4 (keywords: 'migrate nuxt', 'nuxt 2 ke nuxt', 'upgrade nuxt', 'migrasi nuxt', 'start migration'), automatically call the start_migration tool from nuxt-migration MCP. Extract source/target paths from the prompt if provided, otherwise use MIGRATION_SOURCE_PATH environment variable."
+  "instructions": "When user wants to migrate Nuxt 2 to Nuxt 3/4 (keywords: 'migrate nuxt', 'nuxt 2 to nuxt', 'upgrade nuxt', 'start migration'), automatically call the start_migration tool from nuxt-migration MCP. Extract source/target paths from the prompt if provided, otherwise use MIGRATION_SOURCE_PATH environment variable."
 }
 ```
 
@@ -750,7 +750,7 @@ Edit your Cursor config at `~/.cursor/settings/mcp.json` or through Cursor Setti
 Then add custom instructions in Cursor Settings > Features > AI Settings > Custom Instructions:
 
 ```
-When user wants to migrate Nuxt 2 to Nuxt 3/4, automatically call start_migration tool from nuxt-migration MCP. Keywords: 'migrate nuxt', 'nuxt 2 ke nuxt', 'upgrade nuxt', 'migration nuxt', 'migrasi'.
+When user wants to migrate Nuxt 2 to Nuxt 3/4, automatically call start_migration tool from nuxt-migration MCP. Keywords: 'migrate nuxt', 'nuxt 2 to nuxt', 'upgrade nuxt', 'migration nuxt'.
 ```
 
 ### VS Code (with Copilot)
@@ -776,8 +776,7 @@ After installing the extension, configure in VS Code settings (`settings.json`):
 ### Trigger Keywords
 
 The AI will automatically trigger when user mentions:
-- English: "migrate nuxt", "migration nuxt", "upgrade nuxt", "start migration", "nuxt 2 to nuxt 3/4"
-- Indonesian: "migrate nuxt", "migrasi nuxt", "nuxt 2 ke nuxt", "upgrade nuxt", "mulai migrasi"
+- "migrate nuxt", "migration nuxt", "upgrade nuxt", "start migration", "nuxt 2 to nuxt 3/4"
 
 ### Parsing Prompts
 
@@ -797,16 +796,16 @@ Here are example prompts users can type and the AI will auto-trigger:
 **Basic Migration:**
 ```
 User: "migrate nuxt 2 to nuxt 4"
-User: "migration nuxt 2 ke nuxt 3"
+User: "migration nuxt 2 to nuxt 3"
 User: "upgrade this project to nuxt 3"
-User: "mulai migrasi nuxt 2 ke nuxt 4"
+User: "start migration nuxt 2 to nuxt 4"
 ```
 
 **With Specific Module:**
 ```
 User: "migrate nuxt 2 - module deals"
-User: "migration untuk pages/deals"
-User: "migrasikan halaman deals ke nuxt 3"
+User: "migration for pages/deals"
+User: "migrate the deals page to nuxt 3"
 User: "start migration for auth module"
 ```
 
@@ -814,7 +813,7 @@ User: "start migration for auth module"
 ```
 User: "migrate pages/integrations/emails/index.vue"
 User: "migration for pages/dashboard"
-User: "migrasikan file pages/products/index.vue"
+User: "migrate the file pages/products/index.vue"
 User: "start migration for components/Header.vue"
 ```
 
